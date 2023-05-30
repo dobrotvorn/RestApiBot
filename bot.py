@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 import telebot
 from telebot import types
 
@@ -49,9 +50,25 @@ def handle_button_nastya(message):
             fileID = message.photo[-1].file_id
             file_info = bot.get_file(fileID)
             downloaded_file = bot.download_file(file_info.file_path)
-            # json = api(downloaded_file)
-            # name_of_plant = json.plant.name
-            # bot.send_message(text=f"{name_of_plant}", chat_id=message.chat.id)
+
+            data = {
+                'organs': ['flower']
+            }
+
+            files = [
+                ('images', (file_info.file_path, downloaded_file))
+            ]
+
+            req = requests.Request('POST', url=api_endpoint, files=files, data=data)
+            prepared = req.prepare()
+
+            s = requests.Session()
+            response = s.send(prepared)
+            json_result = json.loads(response.text)
+
+            best_match = json_result['bestMatch']
+
+            bot.send_message(text=f"{best_match}", chat_id=message.chat.id)
             f.flag = False
     else:
         f.flag = False
