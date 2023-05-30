@@ -25,11 +25,40 @@ def button_message(message):
     markup.add(item2)
     bot.send_message(message.chat.id, 'Нажмите на понравившуюся кнопку', reply_markup=markup)
 
+# @bot.message_handler(content_types=['photo'])
+# def handle_photo(message):
+#     print(message)
+class Factory:
+    def __init__(self):
+        self.flag = False
 
-@bot.message_handler(content_types=['text'])
+    def get_flag(self):
+        return self.flag
+
+
+f = Factory()
+
+@bot.message_handler(content_types=['text', 'photo'])
 def handle_button_nastya(message):
-    if message.text == "Кнопка Насти":
-        bot.send_message(text="Кнопка нажата", chat_id=message.chat.id)
+    if message.content_type == 'text':
+        if message.text == "Кнопка Насти":
+            f.flag = True
+            bot.send_message(text="Кнопка нажата", chat_id=message.chat.id)
+    elif message.content_type == 'photo':
+        if f.flag:
+            fileID = message.photo[-1].file_id
+            file_info = bot.get_file(fileID)
+            downloaded_file = bot.download_file(file_info.file_path)
+            # json = api(downloaded_file)
+            # name_of_plant = json.plant.name
+            # bot.send_message(text=f"{name_of_plant}", chat_id=message.chat.id)
+            f.flag = False
+    else:
+        f.flag = False
+        # with open("image.jpg", 'wb') as new_file:
+        #     new_file.write(downloaded_file)
+        # bot.send_photo(message.chat.id, downloaded_file)
+
 
 
 bot.polling(none_stop=True)
