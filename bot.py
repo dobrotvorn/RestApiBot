@@ -3,7 +3,7 @@ import requests
 import json
 import telebot
 from telebot import types
-
+from db import Repository
 token = os.getenv("TOKEN")
 weed_token = os.getenv("WEED_TOKEN")
 project = "all"
@@ -32,19 +32,26 @@ def button_message(message):
 class Factory:
     def __init__(self):
         self.flag = False
+        self.repo = None
 
     def get_flag(self):
         return self.flag
+
+    def get_repo(self):
+        return self.repo or Repository()
 
 
 f = Factory()
 
 @bot.message_handler(content_types=['text', 'photo'])
 def handle_button_nastya(message):
+    repo = f.get_repo()
+    # print(message)
+    repo.save_user(message.from_user.username)
     if message.content_type == 'text':
         if message.text == "Кнопка Насти":
             f.flag = True
-            bot.send_message(text="Кнопка нажата", chat_id=message.chat.id)
+            bot.send_message(text=f"Кнопка нажата {json.dumps(repo.get_data())}", chat_id=message.chat.id)
     elif message.content_type == 'photo':
         if f.flag:
             fileID = message.photo[-1].file_id
