@@ -1,8 +1,12 @@
 import os
+import requests
 import telebot
 from telebot import types
 
 token = os.getenv("TOKEN")
+weed_token = os.getenv("WEED_TOKEN")
+project = "all"
+api_endpoint = f"https://my-api.plantnet.org/v2/identify/{project}?api-key={weed_token}"
 
 bot = telebot.TeleBot(token)
 
@@ -21,11 +25,11 @@ def button_message(message):
     markup.add(item2)
     bot.send_message(message.chat.id, 'Нажмите на понравившуюся кнопку', reply_markup=markup)
 
-@bot.message_handler(content_types='text')
-def message_reply(message):
-    if message.text=='Кнопка Насти':
-        bot.send_message(message.chat.id,'Кнопка Насти пока не работает')
-    elif message.text=='Кнопка Коли':
-        bot.send_message(message.chat.id,'Кнопка Коли пока не работает')
+
+@bot.message_handler(content_types=['text'])
+def handle_button_nastya(message):
+    if message.text == "Кнопка Насти":
+        bot.send_message(text="Кнопка нажата", chat_id=message.chat.id)
+
 
 bot.polling(none_stop=True)
