@@ -4,6 +4,7 @@ import json
 import telebot
 from telebot import types
 from db import Repository
+from loggers.loger import log
 token = os.getenv("TOKEN")
 weed_token = os.getenv("WEED_TOKEN")
 project = "all"
@@ -44,6 +45,7 @@ class Factory:
 f = Factory()
 
 @bot.message_handler(content_types=['text', 'photo'])
+@log
 def handle_button_nastya(message):
     repo = f.get_repo()
     # print(message)
