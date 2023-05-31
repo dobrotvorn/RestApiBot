@@ -1,5 +1,6 @@
 import psycopg2
-
+# Ссылочка на статью
+# https://dev-gang.ru/article/cozdanie-s-nulja-prostoi-orm-na-python-5qz3j9ooul/?ysclid=libnjiljrc566340717
 
 # ------------ Manager (Model objects handler) ------------ #
 class BaseManager:
